@@ -5,14 +5,51 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import db from '@/db/db';
+import { formatCurrency, formatNumber } from '@/lib/formatter';
 
-const AdminPage = () => {
+async function getSalesData() {
+  const data = await db.order.aggregate({
+    _sum: { pricePaidInCents: true },
+    _count: true,
+  });
+
+  return {
+    amount: data._sum.pricePaidInCents || 0,
+    numberOfSales: data._count,
+  };
+}
+
+async function getUserData() {
+  const totalUsers = await db.user.count();
+  const orderData = await db.order.aggregate({
+    _sum: { pricePaidInCents: true },
+  });
+
+  return {
+    totalUsers,
+    avgValuePerUser:
+      totalUsers === 0
+        ? 0
+        : (orderData._sum.pricePaidInCents ?? 0) / totalUsers / 100,
+  };
+}
+
+const AdminPage = async () => {
+  const salesData = await getSalesData();
+  const orderData = await getUserData();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4 mx-2">
       <DashboardCard
         title="Sales"
-        desc="sales desc"
-        content="I am sales data"
+        desc={`${formatNumber(salesData.numberOfSales)} Orders`}
+        content={formatCurrency(salesData.amount)}
+      />
+      <DashboardCard
+        title="Customer"
+        desc={`${formatCurrency(orderData.avgValuePerUser)} avg value`}
+        content={formatNumber(orderData.totalUsers)}
       />
     </div>
   );
