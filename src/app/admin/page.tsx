@@ -21,10 +21,12 @@ async function getSalesData() {
 }
 
 async function getUserData() {
-  const totalUsers = await db.user.count();
-  const orderData = await db.order.aggregate({
-    _sum: { pricePaidInCents: true },
-  });
+  const [totalUsers, orderData] = await Promise.all([
+    db.user.count(),
+    db.order.aggregate({
+      _sum: { pricePaidInCents: true },
+    }),
+  ]);
 
   return {
     totalUsers,
@@ -36,8 +38,10 @@ async function getUserData() {
 }
 
 const AdminPage = async () => {
-  const salesData = await getSalesData();
-  const orderData = await getUserData();
+  const [salesData, orderData] = await Promise.all([
+    getSalesData(),
+    getUserData(),
+  ]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4 mx-2">
