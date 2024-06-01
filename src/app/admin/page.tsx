@@ -37,10 +37,27 @@ async function getUserData() {
   };
 }
 
+async function getProductData() {
+  const [activeCount, inactiveCount] = await Promise.all([
+    db.product.count({ where: { isAvailableForPurchase: true } }),
+    db.product.count({ where: { isAvailableForPurchase: false } }),
+  ]);
+
+  // await new Promise((resolve) => {
+  //   setTimeout(resolve, 2000);
+  // });
+
+  return {
+    activeCount,
+    inactiveCount,
+  };
+}
+
 const AdminPage = async () => {
-  const [salesData, orderData] = await Promise.all([
+  const [salesData, orderData, productData] = await Promise.all([
     getSalesData(),
     getUserData(),
+    getProductData(),
   ]);
 
   return (
@@ -54,6 +71,11 @@ const AdminPage = async () => {
         title="Customer"
         desc={`${formatCurrency(orderData.avgValuePerUser)} avg value`}
         content={formatNumber(orderData.totalUsers)}
+      />
+      <DashboardCard
+        title="Active Products"
+        desc={`${formatNumber(productData.inactiveCount)} Inactive`}
+        content={formatNumber(productData.activeCount)}
       />
     </div>
   );

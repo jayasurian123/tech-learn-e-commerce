@@ -1,5 +1,7 @@
 import Nav, { NavLink } from '@/components/Nav';
 
+export const dynamic = 'force-dynamic';
+
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
@@ -15,3 +17,5 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default AdminLayout;
+
+8891492357;
