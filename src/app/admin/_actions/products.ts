@@ -2,7 +2,7 @@
 
 import db from '@/db/db';
 import fs from 'fs/promises';
-import { redirect } from 'next/navigation';
+import { notFound, redirect, useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 const fileSchema = z.instanceof(File, { message: 'Required' });
@@ -38,7 +38,7 @@ export async function addProduct(prevState: unknown, formData: FormData) {
     Buffer.from(await data.image.arrayBuffer()),
   );
 
-  db.product.create({
+  await db.product.create({
     data: {
       name: data.name,
       description: data.description,
@@ -50,4 +50,21 @@ export async function addProduct(prevState: unknown, formData: FormData) {
   });
 
   redirect('/admin/products');
+}
+
+export async function toggleProductAvailability(
+  id: string,
+  isAvailableForPurchase: boolean,
+) {
+  await db.product.update({ where: { id }, data: { isAvailableForPurchase } });
+}
+
+export async function deleteProduct(id: string) {
+  const product = await db.product.delete({ where: { id } });
+  if (product === null) {
+    return notFound();
+  }
+
+  await fs.unlink(product.filePath);
+  await fs.unlink(`public/${product.imagePath}`);
 }
