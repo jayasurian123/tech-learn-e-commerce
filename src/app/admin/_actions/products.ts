@@ -18,7 +18,8 @@ const addSchema = z.object({
   image: imageSchema.refine((file) => file.size > 0, 'Required'),
 });
 
-export async function addProduct(formData: FormData) {
+export async function addProduct(prevState: unknown, formData: FormData) {
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
   const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) {
     return result.error.formErrors.fieldErrors;
@@ -44,6 +45,7 @@ export async function addProduct(formData: FormData) {
       priceInCents: data.priceInCents,
       filePath,
       imagePath,
+      isAvailableForPurchase: false,
     },
   });
 
