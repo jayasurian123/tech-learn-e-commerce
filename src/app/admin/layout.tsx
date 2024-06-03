@@ -11,7 +11,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <NavLink href="/admin/customers">Customers</NavLink>
         <NavLink href="/admin/sales">Sales</NavLink>
       </Nav>
-      {children}
+      <div className="mx-5">{children}</div>
     </>
   );
 };
