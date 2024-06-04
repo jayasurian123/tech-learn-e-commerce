@@ -9,10 +9,13 @@ import { Product } from '@prisma/client';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
-import { addProduct } from '../../_actions/products';
+import { addProduct, editProduct } from '../../_actions/products';
 
 const ProductForm = ({ product }: { product?: Product | null }) => {
-  const [errorState, formAction] = useFormState(addProduct, {});
+  const [errorState, formAction] = useFormState(
+    product == null ? addProduct : editProduct.bind(null, product.id),
+    {},
+  );
   const [priceInCents, setPriceInCents] = useState<number | undefined>(
     product?.priceInCents,
   );
