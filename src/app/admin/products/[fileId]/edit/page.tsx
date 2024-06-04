@@ -3,11 +3,11 @@ import db from '@/db/db';
 import ProductForm from '../../_components/ProductForm';
 
 const EditProductPage = async ({
-  params: { id },
+  params: { fileId },
 }: {
-  params: { id: string };
+  params: { fileId: string };
 }) => {
-  const product = await db.product.findUnique({ where: { id } });
+  const product = await db.product.findUnique({ where: { id: fileId } });
 
   return (
     <>
