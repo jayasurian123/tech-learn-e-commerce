@@ -1,4 +1,4 @@
-import ProductCard from '@/components/ProductCard';
+import ProductCard, { ProductCardSkeleton } from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import db from '@/db/db';
 import { Product } from '@prisma/client';
@@ -46,7 +46,6 @@ async function ProductGridSection({
   productsFetcher,
 }: ProductGridSectionProps) {
   const products = await productsFetcher();
-  console.log('🚀 ~ products:', products);
 
   return (
     <div className="space-y-4">
