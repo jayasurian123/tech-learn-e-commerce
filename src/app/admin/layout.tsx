@@ -17,5 +17,3 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default AdminLayout;
-
-8891492357;
